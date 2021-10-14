@@ -1,6 +1,6 @@
 let player1 = {
   name: "Taras",
-  hp: 85,
+  hp: 80,
   img: "http://reactmarathon-api.herokuapp.com/assets/liukang.gif",
   weapon: ["axe", "saber", "revolver"],
   attack() {
