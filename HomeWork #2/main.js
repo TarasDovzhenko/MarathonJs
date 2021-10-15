@@ -1,6 +1,10 @@
+let arenas = document.querySelector(".arenas");
+let randomBtn = document.querySelector(".button");
+
 let player1 = {
+  player: 1,
   name: "Taras",
-  hp: 88,
+  hp: 100,
   img: "http://reactmarathon-api.herokuapp.com/assets/liukang.gif",
   weapon: ["axe", "saber", "revolver"],
   attack() {
@@ -9,6 +13,7 @@ let player1 = {
 };
 
 let player2 = {
+  player: 2,
   name: "Petro",
   hp: 100,
   img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
@@ -18,36 +23,73 @@ let player2 = {
   },
 };
 
-function createPlayer(player, namePlayer) {
-  let div1 = document.createElement("div");
-  div1.classList.add(player);
+function creatElement(tag, className) {
+  let tagEl = document.createElement(tag);
+  if (className) {
+    tagEl.classList.add(className);
+  }
+  return tagEl;
+}
 
-  let div2 = document.createElement("div");
-  div2.classList.add("progressbar");
+function createPlayer(namePlayer) {
+  let divPlayer = creatElement("div", "player" + namePlayer.player);
 
-  let div3 = document.createElement("div");
-  div3.classList.add("life");
-  div3.style.width = namePlayer.hp + "%";
+  let divProgressbar = creatElement("div", "progressbar");
 
-  let div4 = document.createElement("div");
-  div4.classList.add("name");
-  div4.innerText = namePlayer.name;
+  let divLife = creatElement("div", "life");
+  divLife.style.width = namePlayer.hp + "%";
 
-  let div5 = document.createElement("div");
-  div5.classList.add("character");
+  let divName = creatElement("div", "name");
+  divName.innerText = namePlayer.name;
+
+  let divCharacter = creatElement("div", "character");
 
   let img = document.createElement("img");
   img.src = namePlayer.img;
 
-  div2.appendChild(div3);
-  div2.appendChild(div4);
-  div5.appendChild(img);
-  div1.appendChild(div2);
-  div1.appendChild(div5);
+  divProgressbar.appendChild(divLife);
+  divProgressbar.appendChild(divName);
+  divCharacter.appendChild(img);
+  divPlayer.appendChild(divProgressbar);
+  divPlayer.appendChild(divCharacter);
 
-  let arenas = document.querySelector(".arenas");
-  arenas.appendChild(div1);
+  return divPlayer;
 }
 
-createPlayer("player1", player1);
-createPlayer("player2", player2);
+arenas.appendChild(createPlayer(player1));
+arenas.appendChild(createPlayer(player2));
+
+function cgangeHP(player) {
+  let playerLife = document.querySelector(".player" + player.player + " .life");
+  player.hp -= randomInteger(1, 20);
+  playerLife.style.width = player.hp + "%";
+
+  if (player2.hp <= 0) {
+    player1.hp = 0;
+
+    arenas.appendChild(playerWin(player1.name));
+  } else if (player1.hp <= 0) {
+    player2.hp = 0;
+
+    arenas.appendChild(playerWin(player2.name));
+  }
+}
+
+randomBtn.addEventListener("click", fightClick);
+
+function fightClick() {
+  cgangeHP(player1);
+  cgangeHP(player2);
+}
+
+function playerWin(name) {
+  let winTitel = creatElement("div", "loseTitle");
+  winTitel.innerText = name + " WIN";
+
+  return winTitel;
+}
+
+function randomInteger(min, max) {
+  let rand = min - 0.5 + Math.random() * (max - min + 1);
+  return Math.round(rand);
+}
